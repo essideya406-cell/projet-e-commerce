@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-
+// ─── LOG TOUTES LES REQUETES ENTRANTES ──────────────────────────────────────
 app.use((req, res, next) => {
     console.log("─────────────────────────────────────────");
     console.log(`[REQUETE] ${req.method} ${req.url}`);
@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
 });
 
 
-//inscription
+// ─── INSCRIPTION ────────────────────────────────────────────────────────────
 app.post("/api/inscription", async (req, res) => {
     console.log("[INSCRIPTION] Données reçues :", req.body);
 
@@ -80,7 +80,7 @@ app.post("/api/inscription", async (req, res) => {
 });
 
 
-// pour connexion
+// ─── CONNEXION ───────────────────────────────────────────────────────────────
 app.post("/api/connexion", async (req, res) => {
     console.log("[CONNEXION] Données reçues :", { email: req.body.email, mot_de_passe: req.body.mot_de_passe ? "****" : "NON" });
 
@@ -124,7 +124,7 @@ app.post("/api/connexion", async (req, res) => {
 });
 
 
-// les commandes
+// ─── COMMANDE ────────────────────────────────────────────────────────────────
 app.post("/api/commande", async (req, res) => {
     console.log("[COMMANDE] Données reçues :", req.body);
 
@@ -157,9 +157,10 @@ app.post("/api/commande", async (req, res) => {
 
         console.log("[COMMANDE] Insertion dans commande_produits...");
         await db.query(
-            `INSERT INTO commande_produits (id_commande, nom_produit, prix, quantite)
-             VALUES (?, ?, ?, ?)`,
-            [idCommande, produit.nom || "", prix, 1]
+            `INSERT INTO commande_produits
+            (id_commande, nom_produit, prix_unitaire, prix, quantite)
+            VALUES (?, ?, ?, ?, ?)`,
+            [idCommande, produit.nom || "", prix, prix, 1]
         );
         console.log("[COMMANDE] Produit inséré avec succès");
 
@@ -177,7 +178,7 @@ app.post("/api/commande", async (req, res) => {
 
 
 
-// connexion de ladmin
+// ─── ADMIN : CONNEXION ───────────────────────────────────────────────────────
 app.post("/api/admin/connexion", async (req, res) => {
     const { email, mot_de_passe } = req.body;
     if (!email || !mot_de_passe)
@@ -207,7 +208,7 @@ app.post("/api/admin/connexion", async (req, res) => {
 });
 
 
-// liste des user pour ladmin
+// ─── ADMIN : LISTE UTILISATEURS ─────────────────────────────────────────────
 app.get("/api/admin/utilisateurs", async (req, res) => {
     try {
         const rows = await db.query(
@@ -221,7 +222,7 @@ app.get("/api/admin/utilisateurs", async (req, res) => {
 });
 
 
-// liste des commandes
+// ─── ADMIN : LISTE COMMANDES ─────────────────────────────────────────────────
 app.get("/api/admin/commandes", async (req, res) => {
     try {
         const rows = await db.query(
@@ -235,7 +236,7 @@ app.get("/api/admin/commandes", async (req, res) => {
 });
 
 
-
+// ─── ADMIN : STATS ───────────────────────────────────────────────────────────
 app.get("/api/admin/stats", async (req, res) => {
     try {
         const [uRows] = await db.query("SELECT COUNT(*) AS total FROM utilisateurs");

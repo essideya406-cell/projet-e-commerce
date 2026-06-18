@@ -3,404 +3,678 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Créer un compte</title>
+  <title>Créer un compte — SuperMarket</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #f4f5f7;
+      --card:      #ffffff;
+      --primary:   #1a1a2e;
+      --accent:    #e94560;
+      --accent-lt: #fff0f3;
+      --text:      #1a1a2e;
+      --muted:     #6b7280;
+      --border:    #e5e7eb;
+      --radius:    12px;
+      --shadow:    0 4px 24px rgba(26,26,46,.10);
+      --success:   #16a34a;
+      --error:     #dc2626;
+    }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #f0f2f5;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
     }
 
+    /* ── Card ── */
     .card {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      padding: 2.5rem 2rem;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
       width: 100%;
-      max-width: 460px;
+      max-width: 480px;
+      overflow: hidden;
     }
 
-    .card-header { text-align: center; margin-bottom: 2rem; }
-
-    .card-header .avatar {
-      width: 60px; height: 60px;
-      background: #111827; border-radius: 50%;
+    /* ── Brand strip ── */
+    .brand-strip {
+      background: var(--primary);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 44px; height: 44px;
+      background: var(--accent);
+      border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
+      flex-shrink: 0;
     }
-    .card-header .avatar i { font-size: 28px; color: #38bdf8; }
-    .card-header h1 { font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.3rem; }
-    .card-header p  { font-size: 0.85rem; color: #6b7280; }
+    .brand-icon i { font-size: 22px; color: #fff; }
+    .brand-text h1 { font-size: 1.15rem; font-weight: 700; color: #fff; }
+    .brand-text p  { font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
 
-    .form-group { margin-bottom: 1rem; position: relative; }
-    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    /* ── Form body ── */
+    .form-body { padding: 2rem 2rem 2.5rem; }
 
-    .input-wrap { position: relative; }
-    .input-wrap i {
-      position: absolute; left: 12px; top: 50%;
-      transform: translateY(-50%); font-size: 18px;
-      color: #9ca3af; pointer-events: none;
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
     }
 
-    .form-group input {
-      width: 100%; padding: 11px 12px 11px 40px;
-      border: 1.5px solid #e5e7eb; border-radius: 10px;
-      font-size: 0.9rem; font-family: 'Poppins', sans-serif;
-      color: #111827; transition: border-color .2s, box-shadow .2s; outline: none;
+    /* ── Field row ── */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
-    .form-group input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
-    .form-group input.error { border-color: #ef4444; }
 
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    /* ── Field ── */
+    .field { margin-bottom: 1rem; }
 
-    .error-msg { font-size: 11px; color: #ef4444; margin-top: 4px; display: none; }
-
-    .password-toggle {
-      position: absolute; right: 12px; top: 50%;
-      transform: translateY(-50%); cursor: pointer;
-      color: #9ca3af; font-size: 18px; pointer-events: all;
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
     }
-    .password-toggle:hover { color: #374151; }
 
-    .strength-bar { height: 4px; border-radius: 4px; background: #e5e7eb; margin-top: 6px; overflow: hidden; }
-    .strength-fill { height: 100%; border-radius: 4px; width: 0%; transition: width .3s, background .3s; }
-    .strength-label { font-size: 11px; color: #9ca3af; margin-top: 3px; }
+    .field label span.req { color: var(--accent); margin-left: 2px; }
 
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap .icon-left {
+      position: absolute;
+      left: 12px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 17px; color: #9ca3af;
+      pointer-events: none;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 10px 14px 10px 40px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .input-wrap input::placeholder { color: #c0c8d4; }
+    .input-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(233,69,96,.12);
+    }
+    .input-wrap input.has-error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(220,38,38,.10);
+    }
+    .input-wrap input.is-valid {
+      border-color: var(--success);
+    }
+
+    /* ── Toggle password ── */
+    .toggle-pwd {
+      position: absolute;
+      right: 12px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 17px;
+      color: #9ca3af;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .toggle-pwd:hover { color: var(--text); }
+
+    /* ── Strength bar ── */
+    .strength-wrap { margin-top: 6px; }
+    .strength-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      border-radius: 4px;
+      width: 0%;
+      transition: width .35s, background .35s;
+    }
+    .strength-txt {
+      font-size: 0.71rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── Error message ── */
+    .err-msg {
+      font-size: 0.72rem;
+      color: var(--error);
+      margin-top: 5px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+    .err-msg i { font-size: 14px; flex-shrink: 0; }
+    .err-msg.visible { display: flex; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--border); margin: 1.4rem 0; }
+
+    /* ── Submit button ── */
     .btn-submit {
-      width: 100%; padding: 13px; background: #111827; color: #fff;
-      border: none; border-radius: 10px; font-size: 1rem; font-weight: 600;
-      font-family: 'Poppins', sans-serif; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      margin-top: 1.5rem; transition: background .2s, transform .15s;
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background .2s, transform .15s, opacity .2s;
+      margin-top: 0.5rem;
     }
-    .btn-submit:hover { background: #1f2937; transform: translateY(-1px); }
-    .btn-submit:disabled { background: #6b7280; cursor: not-allowed; transform: none; }
-    .btn-submit i { font-size: 18px; }
+    .btn-submit:hover  { background: #c73350; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .btn-submit i { font-size: 19px; }
 
-    .login-link { text-align: center; margin-top: 1.2rem; font-size: 0.83rem; color: #6b7280; }
-    .login-link a { color: #0284c7; text-decoration: none; font-weight: 600; }
+    /* ── Login link ── */
+    .login-link {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .login-link a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
     .login-link a:hover { text-decoration: underline; }
 
-    /* ── boîte de log debug visible sur la page ── */
-    #debug-box {
-      margin-top: 1.5rem;
-      background: #0f172a;
-      border-radius: 10px;
-      padding: 1rem;
-      font-family: monospace;
-      font-size: 0.78rem;
-      color: #94a3b8;
-      max-height: 220px;
-      overflow-y: auto;
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+    }
+
+    /* ════════════════════════════════════════════
+       SUCCESS OVERLAY
+    ════════════════════════════════════════════ */
+    .success-overlay {
       display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      text-align: center;
     }
-    #debug-box .log-info  { color: #7dd3fc; }
-    #debug-box .log-ok    { color: #4ade80; }
-    #debug-box .log-warn  { color: #fbbf24; }
-    #debug-box .log-error { color: #f87171; }
+    .success-overlay.active { display: flex; }
 
-    .success-box { display: none; text-align: center; padding: 2rem; }
-    .success-box i { font-size: 56px; color: #22c55e; margin-bottom: 1rem; display: block; }
-    .success-box h2 { font-size: 1.3rem; color: #111827; margin-bottom: 0.5rem; }
-    .success-box p { color: #6b7280; font-size: 0.88rem; margin-bottom: 1.5rem; }
+    .success-icon-wrap {
+      width: 80px; height: 80px;
+      background: #f0fdf4;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from { transform: scale(.5); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    .success-icon-wrap i { font-size: 40px; color: var(--success); }
 
+    .success-overlay h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .success-overlay p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .success-overlay .countdown-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-lt);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
     .btn-go {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 12px 24px; background: #111827; color: #fff;
-      border-radius: 10px; text-decoration: none;
-      font-weight: 600; font-size: 0.9rem; transition: background .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .2s;
     }
-    .btn-go:hover { background: #1f2937; }
+    .btn-go:hover { background: #2d2d52; }
+    .btn-go i { font-size: 18px; }
+
+    /* ── Server-error banner ── */
+    .server-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: var(--error);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+    .server-error.visible { display: flex; }
+    .server-error i { font-size: 18px; flex-shrink: 0; }
+
+    /* ── Responsive ── */
+    @media (max-width: 420px) {
+      .field-row { grid-template-columns: 1fr; }
+      .form-body { padding: 1.5rem; }
+    }
   </style>
 </head>
+
 <body>
 
-  <div class="card">
+<div class="card">
 
-    <div id="form-section">
-      <div class="card-header">
-        <div class="avatar"><i class="ti ti-user-plus"></i></div>
-        <h1>Créer un compte</h1>
-        <p>Rejoignez SuperMarket Together</p>
+  <!-- ══ FORM SECTION ══════════════════════════════════════ -->
+  <div id="form-section">
+
+    <!-- Brand strip -->
+    <div class="brand-strip">
+      <div class="brand-icon"><i class="ti ti-shopping-bag"></i></div>
+      <div class="brand-text">
+        <h1>SuperMarket Together</h1>
+        <p>Créez votre compte en quelques secondes</p>
+      </div>
+    </div>
+
+    <!-- Form body -->
+    <div class="form-body">
+
+      <!-- Server error -->
+      <div class="server-error" id="server-error">
+        <i class="ti ti-alert-circle"></i>
+        <span id="server-error-msg">Une erreur est survenue.</span>
       </div>
 
-      <form id="inscriptionForm">
+      <p class="section-label">Informations personnelles</p>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nom</label>
-            <div class="input-wrap">
-              <i class="ti ti-user"></i>
-              <input type="text" id="nom" placeholder="Dupont">
-            </div>
-            <div class="error-msg" id="err-nom">Nom invalide (min 2 lettres)</div>
-          </div>
-          <div class="form-group">
-            <label>Prénom</label>
-            <div class="input-wrap">
-              <i class="ti ti-user"></i>
-              <input type="text" id="prenom" placeholder="Jean">
-            </div>
-            <div class="error-msg" id="err-prenom">Prénom invalide (min 2 lettres)</div>
-          </div>
-        </div>
+      <!-- Nom + Prénom -->
+      <div class="field-row">
 
-        <div class="form-group">
-          <label>Email</label>
+        <div class="field">
+          <label for="nom">Nom <span class="req">*</span></label>
           <div class="input-wrap">
-            <i class="ti ti-mail"></i>
-            <input type="text" id="email" placeholder="jean@example.com">
+            <i class="ti ti-user icon-left"></i>
+            <input type="text" id="nom" placeholder="Dupont" autocomplete="family-name">
           </div>
-          <div class="error-msg" id="err-email">Email invalide</div>
+          <div class="err-msg" id="err-nom">
+            <i class="ti ti-alert-triangle"></i> Minimum 2 lettres
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Téléphone</label>
+        <div class="field">
+          <label for="prenom">Prénom <span class="req">*</span></label>
           <div class="input-wrap">
-            <i class="ti ti-phone"></i>
-            <input type="text" id="telephone" placeholder="12345678">
+            <i class="ti ti-user icon-left"></i>
+            <input type="text" id="prenom" placeholder="Jean" autocomplete="given-name">
           </div>
-          <div class="error-msg" id="err-tel">Téléphone invalide (8 chiffres exactement)</div>
+          <div class="err-msg" id="err-prenom">
+            <i class="ti ti-alert-triangle"></i> Minimum 2 lettres
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>Mot de passe</label>
-          <div class="input-wrap">
-            <i class="ti ti-lock"></i>
-            <input type="password" id="mdp" placeholder="••••••••" oninput="verifierForce()">
-            <i class="ti ti-eye password-toggle" onclick="toggleMdp('mdp', this)"></i>
-          </div>
-          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
-          <div class="strength-label" id="strength-label"></div>
-          <div class="error-msg" id="err-mdp">Minimum 6 caractères</div>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="email">Adresse e-mail <span class="req">*</span></label>
+        <div class="input-wrap">
+          <i class="ti ti-mail icon-left"></i>
+          <input type="email" id="email" placeholder="jean.dupont@exemple.com" autocomplete="email">
         </div>
-
-        <div class="form-group">
-          <label>Confirmer le mot de passe</label>
-          <div class="input-wrap">
-            <i class="ti ti-lock-check"></i>
-            <input type="password" id="mdp2" placeholder="••••••••">
-            <i class="ti ti-eye password-toggle" onclick="toggleMdp('mdp2', this)"></i>
-          </div>
-          <div class="error-msg" id="err-mdp2">Les mots de passe ne correspondent pas</div>
+        <div class="err-msg" id="err-email">
+          <i class="ti ti-alert-triangle"></i> Adresse e-mail invalide
         </div>
+      </div>
 
-        <button type="submit" class="btn-submit" id="btn-submit">
-          <i class="ti ti-check"></i> Créer mon compte
-        </button>
+      <!-- Téléphone -->
+      <div class="field">
+        <label for="telephone">Téléphone <span class="req">*</span></label>
+        <div class="input-wrap">
+          <i class="ti ti-phone icon-left"></i>
+          <input type="tel" id="telephone" placeholder="12 345 678" maxlength="8" autocomplete="tel">
+        </div>
+        <div class="err-msg" id="err-telephone">
+          <i class="ti ti-alert-triangle"></i> 8 chiffres exacts requis
+        </div>
+      </div>
 
-      </form>
+      <div class="divider"></div>
+      <p class="section-label">Sécurité</p>
+
+      <!-- Mot de passe -->
+      <div class="field">
+        <label for="mdp">Mot de passe <span class="req">*</span></label>
+        <div class="input-wrap">
+          <i class="ti ti-lock icon-left"></i>
+          <input type="password" id="mdp" placeholder="Minimum 6 caractères"
+                 autocomplete="new-password" oninput="evaluerForce()">
+          <i class="ti ti-eye toggle-pwd" id="toggle-mdp"
+             onclick="toggleVisibilite('mdp','toggle-mdp')"></i>
+        </div>
+        <div class="strength-wrap">
+          <div class="strength-bar">
+            <div class="strength-fill" id="strength-fill"></div>
+          </div>
+          <div class="strength-txt" id="strength-txt"></div>
+        </div>
+        <div class="err-msg" id="err-mdp">
+          <i class="ti ti-alert-triangle"></i> Minimum 6 caractères
+        </div>
+      </div>
+
+      <!-- Confirmer -->
+      <div class="field">
+        <label for="mdp2">Confirmer le mot de passe <span class="req">*</span></label>
+        <div class="input-wrap">
+          <i class="ti ti-lock-check icon-left"></i>
+          <input type="password" id="mdp2" placeholder="Répétez votre mot de passe"
+                 autocomplete="new-password">
+          <i class="ti ti-eye toggle-pwd" id="toggle-mdp2"
+             onclick="toggleVisibilite('mdp2','toggle-mdp2')"></i>
+        </div>
+        <div class="err-msg" id="err-mdp2">
+          <i class="ti ti-alert-triangle"></i> Les mots de passe ne correspondent pas
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-submit" id="btn-submit" onclick="soumettre()">
+        <i class="ti ti-user-plus"></i>
+        Créer mon compte
+      </button>
 
       <div class="login-link">
-        Déjà un compte ? <a href="connexion.html">Se connecter</a>
+        Déjà un compte ?&nbsp;<a href="connexion.html">Se connecter</a>
       </div>
 
-      <!-- ── BOÎTE DE DEBUG VISIBLE SUR LA PAGE ── -->
-      <div id="debug-box"></div>
-    </div>
+    </div><!-- /form-body -->
+  </div><!-- /form-section -->
 
-    <!-- Succès -->
-    <div class="success-box" id="success-box">
+
+  <!-- ══ SUCCESS SECTION ══════════════════════════════════ -->
+  <div class="success-overlay" id="success-section">
+    <div class="success-icon-wrap">
       <i class="ti ti-circle-check"></i>
-      <h2>Compte créé avec succès !</h2>
-      <p>Bienvenu sur SuperMarket Together.<br>Vous allez être redirigé dans <strong><span id="countdown">3</span></strong> secondes...</p>
-      <a href="Vetements.html" class="btn-go">
-        <i class="ti ti-shopping-bag"></i> Aller aux catégories
-      </a>
     </div>
-
+    <h2>Compte créé avec succès !</h2>
+    <p>
+      Bienvenue sur SuperMarket Together.<br>
+      Votre compte est prêt, vous pouvez maintenant faire vos achats.
+    </p>
+    <div class="countdown-badge">
+      <i class="ti ti-clock"></i>
+      Redirection dans <strong id="countdown">3</strong> s...
+    </div>
+    <a href="Vetements.html" class="btn-go" id="btn-go">
+      <i class="ti ti-shopping-bag"></i> Aller à la boutique
+    </a>
   </div>
 
-  <script>
-    // ── Boîte de log visible sur la page ──────────────────────────────────────
-    const debugBox = document.getElementById('debug-box');
+</div><!-- /card -->
 
-    function log(msg, type = 'info') {
-      debugBox.style.display = 'block';
-      const line = document.createElement('div');
-      line.className = 'log-' + type;
-      const ts = new Date().toLocaleTimeString();
-      line.textContent = `[${ts}] ${msg}`;
-      debugBox.appendChild(line);
-      debugBox.scrollTop = debugBox.scrollHeight;
-      // aussi dans la console du navigateur
-      if (type === 'error') console.error(msg);
-      else if (type === 'warn') console.warn(msg);
-      else console.log(msg);
+
+<script>
+  /* ═══════════════════════════════════════════════════════
+     HELPERS
+  ═══════════════════════════════════════════════════════ */
+  function setError(fieldId, message) {
+    const input = document.getElementById(fieldId);
+    const msg   = document.getElementById('err-' + fieldId);
+    if (input)  input.classList.add('has-error');
+    if (input)  input.classList.remove('is-valid');
+    if (msg)    msg.classList.add('visible');
+    if (message && msg) msg.querySelector('span') ? 0 : 0; // keep default text
+  }
+
+  function clearError(fieldId) {
+    const input = document.getElementById(fieldId);
+    const msg   = document.getElementById('err-' + fieldId);
+    if (input)  { input.classList.remove('has-error'); input.classList.add('is-valid'); }
+    if (msg)    msg.classList.remove('visible');
+  }
+
+  function showServerError(message) {
+    const banner = document.getElementById('server-error');
+    const txt    = document.getElementById('server-error-msg');
+    txt.textContent = message;
+    banner.classList.add('visible');
+  }
+
+  function hideServerError() {
+    document.getElementById('server-error').classList.remove('visible');
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     FORCE DU MOT DE PASSE
+  ═══════════════════════════════════════════════════════ */
+  function evaluerForce() {
+    const val  = document.getElementById('mdp').value;
+    const fill = document.getElementById('strength-fill');
+    const txt  = document.getElementById('strength-txt');
+
+    let score = 0;
+    if (val.length >= 6)           score++;
+    if (val.length >= 10)          score++;
+    if (/[A-Z]/.test(val))         score++;
+    if (/[0-9]/.test(val))         score++;
+    if (/[^A-Za-z0-9]/.test(val))  score++;
+
+    const niveaux = [
+      { w: '20%',  bg: '#ef4444', label: 'Très faible' },
+      { w: '40%',  bg: '#f97316', label: 'Faible'      },
+      { w: '60%',  bg: '#eab308', label: 'Moyen'       },
+      { w: '80%',  bg: '#22c55e', label: 'Fort'        },
+      { w: '100%', bg: '#16a34a', label: 'Très fort'   },
+    ];
+
+    if (!val.length) {
+      fill.style.width = '0%';
+      txt.textContent  = '';
+      return;
     }
+    const n = niveaux[Math.min(score - 1, 4)];
+    fill.style.width      = n.w;
+    fill.style.background = n.bg;
+    txt.textContent       = n.label;
+    txt.style.color       = n.bg;
+  }
 
-    // ── Helpers formulaire ────────────────────────────────────────────────────
-    function afficherErreur(id, afficher, texte) {
-      const el    = document.getElementById('err-' + id);
-      const input = document.getElementById(id);
-      if (afficher) {
-        if (texte) el.textContent = texte;
-        el.style.display = 'block';
-        input.classList.add('error');
+  /* ═══════════════════════════════════════════════════════
+     TOGGLE VISIBILITÉ MOT DE PASSE
+  ═══════════════════════════════════════════════════════ */
+  function toggleVisibilite(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon  = document.getElementById(iconId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('ti-eye', 'ti-eye-off');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('ti-eye-off', 'ti-eye');
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     VALIDATION FORMULAIRE
+  ═══════════════════════════════════════════════════════ */
+  function valider() {
+    let estValide = true;
+
+    const nom    = document.getElementById('nom').value.trim();
+    const prenom = document.getElementById('prenom').value.trim();
+    const email  = document.getElementById('email').value.trim();
+    const tel    = document.getElementById('telephone').value.trim();
+    const mdp    = document.getElementById('mdp').value;
+    const mdp2   = document.getElementById('mdp2').value;
+
+    // Nom
+    if (nom.length < 2 || !/^[\p{L}\s'\-]+$/u.test(nom)) {
+      setError('nom');   estValide = false;
+    } else { clearError('nom'); }
+
+    // Prénom
+    if (prenom.length < 2 || !/^[\p{L}\s'\-]+$/u.test(prenom)) {
+      setError('prenom'); estValide = false;
+    } else { clearError('prenom'); }
+
+    // Email
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(email)) {
+      setError('email'); estValide = false;
+    } else { clearError('email'); }
+
+    // Téléphone : 8 chiffres
+    if (!/^\d{8}$/.test(tel)) {
+      setError('telephone'); estValide = false;
+    } else { clearError('telephone'); }
+
+    // Mot de passe
+    if (mdp.length < 6) {
+      setError('mdp'); estValide = false;
+    } else { clearError('mdp'); }
+
+    // Confirmation
+    if (mdp !== mdp2 || mdp2 === '') {
+      setError('mdp2'); estValide = false;
+    } else { clearError('mdp2'); }
+
+    return estValide;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     SOUMISSION
+  ═══════════════════════════════════════════════════════ */
+  async function soumettre() {
+    hideServerError();
+
+    if (!valider()) return;
+
+    const btn = document.getElementById('btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Création en cours…';
+
+    const payload = {
+      nom:           document.getElementById('nom').value.trim(),
+      prenom:        document.getElementById('prenom').value.trim(),
+      email:         document.getElementById('email').value.trim(),
+      telephone:     document.getElementById('telephone').value.trim(),
+      mot_de_passe:  document.getElementById('mdp').value
+    };
+
+    try {
+      const reponse = await fetch('/api/inscription', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      });
+
+      const data = await reponse.json();
+
+      if (data.success) {
+        // ── Afficher message succès ──
+        document.getElementById('form-section').style.display = 'none';
+        document.getElementById('success-section').classList.add('active');
+
+        // Compte à rebours + redirection
+        let secondes = 3;
+        const timer = setInterval(() => {
+          secondes--;
+          const el = document.getElementById('countdown');
+          if (el) el.textContent = secondes;
+          if (secondes <= 0) {
+            clearInterval(timer);
+            window.location.href = 'Vetements.html';
+          }
+        }, 1000);
+
       } else {
-        el.style.display = 'none';
-        input.classList.remove('error');
-      }
-    }
-
-    function estAlpha(str) {
-      return str.length >= 2 && /^[\p{L}\s'\-]+$/u.test(str);
-    }
-
-    function toggleMdp(id, icon) {
-      const input = document.getElementById(id);
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.replace('ti-eye', 'ti-eye-off');
-      } else {
-        input.type = 'password';
-        icon.classList.replace('ti-eye-off', 'ti-eye');
-      }
-    }
-
-    function verifierForce() {
-      const mdp  = document.getElementById('mdp').value;
-      const fill = document.getElementById('strength-fill');
-      const lbl  = document.getElementById('strength-label');
-      let score = 0;
-      if (mdp.length >= 6)          score++;
-      if (mdp.length >= 10)         score++;
-      if (/[A-Z]/.test(mdp))        score++;
-      if (/[0-9]/.test(mdp))        score++;
-      if (/[^A-Za-z0-9]/.test(mdp)) score++;
-      const niveaux = [
-        { w: '20%',  bg: '#ef4444', txt: 'Très faible' },
-        { w: '40%',  bg: '#f97316', txt: 'Faible' },
-        { w: '60%',  bg: '#eab308', txt: 'Moyen' },
-        { w: '80%',  bg: '#22c55e', txt: 'Fort' },
-        { w: '100%', bg: '#16a34a', txt: 'Très fort' },
-      ];
-      const n = niveaux[Math.min(score - 1, 4)] || { w: '0%', bg: '#e5e7eb', txt: '' };
-      fill.style.width      = mdp.length ? n.w  : '0%';
-      fill.style.background = mdp.length ? n.bg : '#e5e7eb';
-      lbl.textContent       = mdp.length ? n.txt : '';
-    }
-
-   
-    async function soumettre(e) {
-      e.preventDefault();
-      log('══ Soumission du formulaire ══', 'info');
-
-      const nom    = document.getElementById('nom').value.trim();
-      const prenom = document.getElementById('prenom').value.trim();
-      const email  = document.getElementById('email').value.trim();
-      const tel    = document.getElementById('telephone').value.trim();
-      const mdp    = document.getElementById('mdp').value;
-      const mdp2   = document.getElementById('mdp2').value;
-
-      log(`Valeurs lues → nom:"${nom}" prenom:"${prenom}" email:"${email}" tel:"${tel}" mdp:${mdp ? '(rempli)' : '(vide)'}`, 'info');
-
-      // ── Validation champ par champ ──
-      let ok = true;
-
-      if (!nom || !estAlpha(nom)) {
-        log(`VALIDATION ÉCHOUÉE — nom : "${nom}"`, 'warn');
-        afficherErreur('nom', true);
-        ok = false;
-      } else { afficherErreur('nom', false); }
-
-      if (!prenom || !estAlpha(prenom)) {
-        log(`VALIDATION ÉCHOUÉE — prenom : "${prenom}"`, 'warn');
-        afficherErreur('prenom', true);
-        ok = false;
-      } else { afficherErreur('prenom', false); }
-
-      const emailOk = email && email.indexOf('@') > 0 &&
-                      email.indexOf('.') > email.indexOf('@') + 1 &&
-                      !email.endsWith('.');
-      if (!emailOk) {
-        log(`VALIDATION ÉCHOUÉE — email : "${email}"`, 'warn');
-        afficherErreur('email', true);
-        ok = false;
-      } else { afficherErreur('email', false); }
-
-      if (!tel || tel.length !== 8 || isNaN(tel)) {
-        log(`VALIDATION ÉCHOUÉE — telephone : "${tel}" (longueur: ${tel.length})`, 'warn');
-        afficherErreur('tel', true);
-        ok = false;
-      } else { afficherErreur('tel', false); }
-
-      if (mdp.length < 6) {
-        log(`VALIDATION ÉCHOUÉE — mot de passe trop court (${mdp.length} caractères)`, 'warn');
-        afficherErreur('mdp', true);
-        ok = false;
-      } else { afficherErreur('mdp', false); }
-
-      if (mdp !== mdp2) {
-        log('VALIDATION ÉCHOUÉE — les mots de passe ne correspondent pas', 'warn');
-        afficherErreur('mdp2', true);
-        ok = false;
-      } else { afficherErreur('mdp2', false); }
-
-      if (!ok) {
-        log('Formulaire invalide — envoi annulé', 'error');
-        return;
-      }
-
-      log('Validation OK — envoi vers /api/inscription...', 'ok');
-
-      const btn = document.getElementById('btn-submit');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="ti ti-loader"></i> Envoi...';
-
-      const payload = { nom, prenom, email, telephone: tel, mot_de_passe: mdp };
-      log('Payload envoyé : ' + JSON.stringify({ ...payload, mot_de_passe: '****' }), 'info');
-
-      try {
-        log('fetch() en cours...', 'info');
-        const reponse = await fetch('/api/inscription', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(payload)
-        });
-
-        log(`Réponse HTTP reçue — status : ${reponse.status} ${reponse.statusText}`, reponse.ok ? 'ok' : 'warn');
-
-        const data = await reponse.json();
-        log('Réponse JSON : ' + JSON.stringify(data), data.success ? 'ok' : 'error');
-
-        if (data.success) {
-          log('Compte créé ! Redirection dans 3 secondes...', 'ok');
-          document.getElementById('form-section').style.display = 'none';
-          document.getElementById('success-box').style.display  = 'block';
-          let secondes = 3;
-          const timer = setInterval(() => {
-            secondes--;
-            const el = document.getElementById('countdown');
-            if (el) el.textContent = secondes;
-            if (secondes <= 0) {
-              clearInterval(timer);
-              window.location.href = 'Vetements.html';
-            }
-          }, 1000);
-        } else {
-          log('Erreur serveur : ' + data.message, 'error');
-          afficherErreur('email', true, data.message || 'Erreur lors de la création du compte');
-          btn.disabled = false;
-          btn.innerHTML = '<i class="ti ti-check"></i> Créer mon compte';
-        }
-
-      } catch (err) {
-        log('ERREUR RÉSEAU / fetch() a échoué : ' + err.message, 'error');
-        log('→ Le serveur est-il démarré sur http://localhost:3000 ?', 'error');
-        console.error('Détail erreur fetch :', err);
+        // Erreur métier (ex: email déjà utilisé)
         btn.disabled = false;
-        btn.innerHTML = '<i class="ti ti-check"></i> Créer mon compte';
+        btn.innerHTML = '<i class="ti ti-user-plus"></i> Créer mon compte';
+        showServerError(data.message || 'Une erreur est survenue. Veuillez réessayer.');
+
+        // Si email déjà utilisé, on marque le champ email en erreur
+        if (data.message && data.message.toLowerCase().includes('email')) {
+          setError('email');
+        }
       }
+
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-user-plus"></i> Créer mon compte';
+      showServerError('Impossible de contacter le serveur. Vérifiez votre connexion.');
     }
-  </script>
+  }
+
+  /* ── Permettre la soumission via Enter ── */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const active = document.activeElement;
+      const inputs = ['nom','prenom','email','telephone','mdp','mdp2'];
+      if (inputs.includes(active.id)) soumettre();
+    }
+  });
+</script>
 
 </body>
 </html>
