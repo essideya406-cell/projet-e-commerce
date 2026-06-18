@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Créer un compte</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .card-header { text-align: center; margin-bottom: 2rem; }
+
+    .card-header .avatar {
+      width: 60px; height: 60px;
+      background: #111827; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .card-header .avatar i { font-size: 28px; color: #38bdf8; }
+    .card-header h1 { font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.3rem; }
+    .card-header p  { font-size: 0.85rem; color: #6b7280; }
+
+    .form-group { margin-bottom: 1rem; position: relative; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #374151; margin-bottom: 5px; }
+
+    .input-wrap { position: relative; }
+    .input-wrap i {
+      position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%); font-size: 18px;
+      color: #9ca3af; pointer-events: none;
+    }
+
+    .form-group input {
+      width: 100%; padding: 11px 12px 11px 40px;
+      border: 1.5px solid #e5e7eb; border-radius: 10px;
+      font-size: 0.9rem; font-family: 'Poppins', sans-serif;
+      color: #111827; transition: border-color .2s, box-shadow .2s; outline: none;
+    }
+    .form-group input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+    .form-group input.error { border-color: #ef4444; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .error-msg { font-size: 11px; color: #ef4444; margin-top: 4px; display: none; }
+
+    .password-toggle {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%); cursor: pointer;
+      color: #9ca3af; font-size: 18px; pointer-events: all;
+    }
+    .password-toggle:hover { color: #374151; }
+
+    .strength-bar { height: 4px; border-radius: 4px; background: #e5e7eb; margin-top: 6px; overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 4px; width: 0%; transition: width .3s, background .3s; }
+    .strength-label { font-size: 11px; color: #9ca3af; margin-top: 3px; }
+
+    .btn-submit {
+      width: 100%; padding: 13px; background: #111827; color: #fff;
+      border: none; border-radius: 10px; font-size: 1rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 1.5rem; transition: background .2s, transform .15s;
+    }
+    .btn-submit:hover { background: #1f2937; transform: translateY(-1px); }
+    .btn-submit:disabled { background: #6b7280; cursor: not-allowed; transform: none; }
+    .btn-submit i { font-size: 18px; }
+
+    .login-link { text-align: center; margin-top: 1.2rem; font-size: 0.83rem; color: #6b7280; }
+    .login-link a { color: #0284c7; text-decoration: none; font-weight: 600; }
+    .login-link a:hover { text-decoration: underline; }
+
+    /* ── boîte de log debug visible sur la page ── */
+    #debug-box {
+      margin-top: 1.5rem;
+      background: #0f172a;
+      border-radius: 10px;
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+    }
+    #debug-box .log-info  { color: #7dd3fc; }
+    #debug-box .log-ok    { color: #4ade80; }
+    #debug-box .log-warn  { color: #fbbf24; }
+    #debug-box .log-error { color: #f87171; }
+
+    .success-box { display: none; text-align: center; padding: 2rem; }
+    .success-box i { font-size: 56px; color: #22c55e; margin-bottom: 1rem; display: block; }
+    .success-box h2 { font-size: 1.3rem; color: #111827; margin-bottom: 0.5rem; }
+    .success-box p { color: #6b7280; font-size: 0.88rem; margin-bottom: 1.5rem; }
+
+    .btn-go {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px; background: #111827; color: #fff;
+      border-radius: 10px; text-decoration: none;
+      font-weight: 600; font-size: 0.9rem; transition: background .2s;
+    }
+    .btn-go:hover { background: #1f2937; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <div id="form-section">
+      <div class="card-header">
+        <div class="avatar"><i class="ti ti-user-plus"></i></div>
+        <h1>Créer un compte</h1>
+        <p>Rejoignez SuperMarket Together</p>
+      </div>
+
+      <form id="inscriptionForm">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom</label>
+            <div class="input-wrap">
+              <i class="ti ti-user"></i>
+              <input type="text" id="nom" placeholder="Dupont">
+            </div>
+            <div class="error-msg" id="err-nom">Nom invalide (min 2 lettres)</div>
+          </div>
+          <div class="form-group">
+            <label>Prénom</label>
+            <div class="input-wrap">
+              <i class="ti ti-user"></i>
+              <input type="text" id="prenom" placeholder="Jean">
+            </div>
+            <div class="error-msg" id="err-prenom">Prénom invalide (min 2 lettres)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <div class="input-wrap">
+            <i class="ti ti-mail"></i>
+            <input type="text" id="email" placeholder="jean@example.com">
+          </div>
+          <div class="error-msg" id="err-email">Email invalide</div>
+        </div>
+
+        <div class="form-group">
+          <label>Téléphone</label>
+          <div class="input-wrap">
+            <i class="ti ti-phone"></i>
+            <input type="text" id="telephone" placeholder="12345678">
+          </div>
+          <div class="error-msg" id="err-tel">Téléphone invalide (8 chiffres exactement)</div>
+        </div>
+
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock"></i>
+            <input type="password" id="mdp" placeholder="••••••••" oninput="verifierForce()">
+            <i class="ti ti-eye password-toggle" onclick="toggleMdp('mdp', this)"></i>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+          <div class="strength-label" id="strength-label"></div>
+          <div class="error-msg" id="err-mdp">Minimum 6 caractères</div>
+        </div>
+
+        <div class="form-group">
+          <label>Confirmer le mot de passe</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock-check"></i>
+            <input type="password" id="mdp2" placeholder="••••••••">
+            <i class="ti ti-eye password-toggle" onclick="toggleMdp('mdp2', this)"></i>
+          </div>
+          <div class="error-msg" id="err-mdp2">Les mots de passe ne correspondent pas</div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <i class="ti ti-check"></i> Créer mon compte
+        </button>
+
+      </form>
+
+      <div class="login-link">
+        Déjà un compte ? <a href="connexion.html">Se connecter</a>
+      </div>
+
+      <!-- ── BOÎTE DE DEBUG VISIBLE SUR LA PAGE ── -->
+      <div id="debug-box"></div>
+    </div>
+
+    <!-- Succès -->
+    <div class="success-box" id="success-box">
+      <i class="ti ti-circle-check"></i>
+      <h2>Compte créé avec succès !</h2>
+      <p>Bienvenu sur SuperMarket Together.<br>Vous allez être redirigé dans <strong><span id="countdown">3</span></strong> secondes...</p>
+      <a href="Vetements.html" class="btn-go">
+        <i class="ti ti-shopping-bag"></i> Aller aux catégories
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Boîte de log visible sur la page ──────────────────────────────────────
+    const debugBox = document.getElementById('debug-box');
+
+    function log(msg, type = 'info') {
+      debugBox.style.display = 'block';
+      const line = document.createElement('div');
+      line.className = 'log-' + type;
+      const ts = new Date().toLocaleTimeString();
+      line.textContent = `[${ts}] ${msg}`;
+      debugBox.appendChild(line);
+      debugBox.scrollTop = debugBox.scrollHeight;
+      // aussi dans la console du navigateur
+      if (type === 'error') console.error(msg);
+      else if (type === 'warn') console.warn(msg);
+      else console.log(msg);
+    }
+
+    // ── Helpers formulaire ────────────────────────────────────────────────────
+    function afficherErreur(id, afficher, texte) {
+      const el    = document.getElementById('err-' + id);
+      const input = document.getElementById(id);
+      if (afficher) {
+        if (texte) el.textContent = texte;
+        el.style.display = 'block';
+        input.classList.add('error');
+      } else {
+        el.style.display = 'none';
+        input.classList.remove('error');
+      }
+    }
+
+    function estAlpha(str) {
+      return str.length >= 2 && /^[\p{L}\s'\-]+$/u.test(str);
+    }
+
+    function toggleMdp(id, icon) {
+      const input = document.getElementById(id);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('ti-eye', 'ti-eye-off');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('ti-eye-off', 'ti-eye');
+      }
+    }
+
+    function verifierForce() {
+      const mdp  = document.getElementById('mdp').value;
+      const fill = document.getElementById('strength-fill');
+      const lbl  = document.getElementById('strength-label');
+      let score = 0;
+      if (mdp.length >= 6)          score++;
+      if (mdp.length >= 10)         score++;
+      if (/[A-Z]/.test(mdp))        score++;
+      if (/[0-9]/.test(mdp))        score++;
+      if (/[^A-Za-z0-9]/.test(mdp)) score++;
+      const niveaux = [
+        { w: '20%',  bg: '#ef4444', txt: 'Très faible' },
+        { w: '40%',  bg: '#f97316', txt: 'Faible' },
+        { w: '60%',  bg: '#eab308', txt: 'Moyen' },
+        { w: '80%',  bg: '#22c55e', txt: 'Fort' },
+        { w: '100%', bg: '#16a34a', txt: 'Très fort' },
+      ];
+      const n = niveaux[Math.min(score - 1, 4)] || { w: '0%', bg: '#e5e7eb', txt: '' };
+      fill.style.width      = mdp.length ? n.w  : '0%';
+      fill.style.background = mdp.length ? n.bg : '#e5e7eb';
+      lbl.textContent       = mdp.length ? n.txt : '';
+    }
+
+    // ── Soumission ────────────────────────────────────────────────────────────
+    async function soumettre(e) {
+      e.preventDefault();
+      log('══ Soumission du formulaire ══', 'info');
+
+      const nom    = document.getElementById('nom').value.trim();
+      const prenom = document.getElementById('prenom').value.trim();
+      const email  = document.getElementById('email').value.trim();
+      const tel    = document.getElementById('telephone').value.trim();
+      const mdp    = document.getElementById('mdp').value;
+      const mdp2   = document.getElementById('mdp2').value;
+
+      log(`Valeurs lues → nom:"${nom}" prenom:"${prenom}" email:"${email}" tel:"${tel}" mdp:${mdp ? '(rempli)' : '(vide)'}`, 'info');
+
+      // ── Validation champ par champ ──
+      let ok = true;
+
+      if (!nom || !estAlpha(nom)) {
+        log(`VALIDATION ÉCHOUÉE — nom : "${nom}"`, 'warn');
+        afficherErreur('nom', true);
+        ok = false;
+      } else { afficherErreur('nom', false); }
+
+      if (!prenom || !estAlpha(prenom)) {
+        log(`VALIDATION ÉCHOUÉE — prenom : "${prenom}"`, 'warn');
+        afficherErreur('prenom', true);
+        ok = false;
+      } else { afficherErreur('prenom', false); }
+
+      const emailOk = email && email.indexOf('@') > 0 &&
+                      email.indexOf('.') > email.indexOf('@') + 1 &&
+                      !email.endsWith('.');
+      if (!emailOk) {
+        log(`VALIDATION ÉCHOUÉE — email : "${email}"`, 'warn');
+        afficherErreur('email', true);
+        ok = false;
+      } else { afficherErreur('email', false); }
+
+      if (!tel || tel.length !== 8 || isNaN(tel)) {
+        log(`VALIDATION ÉCHOUÉE — telephone : "${tel}" (longueur: ${tel.length})`, 'warn');
+        afficherErreur('tel', true);
+        ok = false;
+      } else { afficherErreur('tel', false); }
+
+      if (mdp.length < 6) {
+        log(`VALIDATION ÉCHOUÉE — mot de passe trop court (${mdp.length} caractères)`, 'warn');
+        afficherErreur('mdp', true);
+        ok = false;
+      } else { afficherErreur('mdp', false); }
+
+      if (mdp !== mdp2) {
+        log('VALIDATION ÉCHOUÉE — les mots de passe ne correspondent pas', 'warn');
+        afficherErreur('mdp2', true);
+        ok = false;
+      } else { afficherErreur('mdp2', false); }
+
+      if (!ok) {
+        log('Formulaire invalide — envoi annulé', 'error');
+        return;
+      }
+
+      log('Validation OK — envoi vers /api/inscription...', 'ok');
+
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ti ti-loader"></i> Envoi...';
+
+      const payload = { nom, prenom, email, telephone: tel, mot_de_passe: mdp };
+      log('Payload envoyé : ' + JSON.stringify({ ...payload, mot_de_passe: '****' }), 'info');
+
+      try {
+        log('fetch() en cours...', 'info');
+        const reponse = await fetch('/api/inscription', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(payload)
+        });
+
+        log(`Réponse HTTP reçue — status : ${reponse.status} ${reponse.statusText}`, reponse.ok ? 'ok' : 'warn');
+
+        const data = await reponse.json();
+        log('Réponse JSON : ' + JSON.stringify(data), data.success ? 'ok' : 'error');
+
+        if (data.success) {
+          log('Compte créé ! Redirection dans 3 secondes...', 'ok');
+          document.getElementById('form-section').style.display = 'none';
+          document.getElementById('success-box').style.display  = 'block';
+          let secondes = 3;
+          const timer = setInterval(() => {
+            secondes--;
+            const el = document.getElementById('countdown');
+            if (el) el.textContent = secondes;
+            if (secondes <= 0) {
+              clearInterval(timer);
+              window.location.href = 'Vetements.html';
+            }
+          }, 1000);
+        } else {
+          log('Erreur serveur : ' + data.message, 'error');
+          afficherErreur('email', true, data.message || 'Erreur lors de la création du compte');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="ti ti-check"></i> Créer mon compte';
+        }
+
+      } catch (err) {
+        log('ERREUR RÉSEAU / fetch() a échoué : ' + err.message, 'error');
+        log('→ Le serveur est-il démarré sur http://localhost:3000 ?', 'error');
+        console.error('Détail erreur fetch :', err);
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ti ti-check"></i> Créer mon compte';
+      }
+    }
+
+    document.getElementById('inscriptionForm').addEventListener('submit', soumettre);
+    log('Page chargée — formulaire prêt', 'ok');
+  </script>
+
+</body>
+</html>

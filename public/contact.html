@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us</title>
+  <link rel="stylesheet" href="css/style2.css" />
+  <script src="js/script.js" ></script>
+</head>
+<body>
+  <div>
+    <h1>Contactez Nous</h1>
+    <form method="get" onsubmit="return verifier()">
+      <input type="text" placeholder="Nom" id="nom11" >
+      <input type="text" placeholder="Prenom" id="prenom" >
+      <input type="tel" placeholder="Telephone" id="telephone" >
+      <input type="email" placeholder="Email" id="email" >
+      <input type="text" id="date" onfocus="dd()" placeholder="Date" readonly required>
+      <input type="text" placeholder="Votre Localisation" name="" id="localisation">
+      <textarea placeholder="Message" rows="5" id="message"></textarea>
+      <input type="submit" value="Envoyer" onclick="extraire()" class="button">
+    </form>
+  </div>
+</body>
+</html>

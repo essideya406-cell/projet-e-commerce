@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Se connecter</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 420px;
+    }
+    .card-header { text-align: center; margin-bottom: 2rem; }
+    .card-header .avatar {
+      width: 60px; height: 60px;
+      background: #111827; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .card-header .avatar i { font-size: 28px; color: #38bdf8; }
+    .card-header h1 { font-size: 1.5rem; font-weight: 700; color: #111827; margin-bottom: 0.3rem; }
+    .card-header p { font-size: 0.85rem; color: #6b7280; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    .input-wrap { position: relative; }
+    .input-wrap i.icone {
+      position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px; color: #9ca3af; pointer-events: none;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 11px 12px 11px 40px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      color: #111827;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .form-group input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+    .form-group input.error { border-color: #ef4444; }
+    .error-msg { font-size: 11px; color: #ef4444; margin-top: 4px; display: none; }
+    .password-toggle {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer; color: #9ca3af; font-size: 18px;
+    }
+    .password-toggle:hover { color: #374151; }
+    .alert-error {
+      background: #fef2f2; border: 1.5px solid #fca5a5;
+      border-radius: 10px; color: #b91c1c;
+      padding: 10px 14px; font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none; align-items: center; gap: 8px;
+    }
+    .alert-error i { font-size: 18px; flex-shrink: 0; }
+    .btn-submit {
+      width: 100%; padding: 13px;
+      background: #111827; color: #fff;
+      border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 1.5rem;
+      transition: background .2s, transform .15s;
+    }
+    .btn-submit:hover { background: #1f2937; transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-submit i { font-size: 18px; }
+    .register-link { text-align: center; margin-top: 1.2rem; font-size: 0.83rem; color: #6b7280; }
+    .register-link a { color: #0284c7; text-decoration: none; font-weight: 600; }
+    .register-link a:hover { text-decoration: underline; }
+    .welcome-box { display: none; text-align: center; padding: 1rem 0; }
+    .welcome-box .check-icon { font-size: 64px; color: #22c55e; margin-bottom: 1rem; display: block; }
+    .welcome-box h2 { font-size: 1.4rem; color: #111827; margin-bottom: 0.4rem; }
+    .welcome-box p { color: #6b7280; font-size: 0.88rem; margin-bottom: 1.5rem; }
+    .welcome-box .user-name { color: #111827; font-weight: 700; }
+    .countdown-badge {
+      display: inline-block;
+      background: #f0fdf4; border: 1.5px solid #86efac;
+      color: #166534; border-radius: 20px;
+      padding: 4px 14px; font-size: 0.82rem;
+      margin-bottom: 1rem;
+    }
+    .btn-go {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px;
+      background: #111827; color: #fff;
+      border-radius: 10px; text-decoration: none;
+      font-weight: 600; font-size: 0.9rem;
+      transition: background .2s;
+    }
+    .btn-go:hover { background: #1f2937; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <!-- Formulaire de connexion -->
+    <div id="form-section">
+      <div class="card-header">
+        <div class="avatar"><i class="ti ti-login"></i></div>
+        <h1>Se connecter</h1>
+        <p>Bienvenu sur SuperMarket Together</p>
+      </div>
+
+      <div class="alert-error" id="alert-error">
+        <i class="ti ti-alert-circle"></i>
+        <span id="alert-error-msg">Email ou mot de passe incorrect.</span>
+      </div>
+
+      <form id="connexionForm" onsubmit="return connecter(event)">
+
+        <div class="form-group">
+          <label>Email</label>
+          <div class="input-wrap">
+            <i class="ti ti-mail icone"></i>
+            <input type="text" id="email" placeholder="jean@example.com">
+          </div>
+          <div class="error-msg" id="err-email">Veuillez entrer un email valide</div>
+        </div>
+
+        <div class="form-group">
+          <label>Mot de passe</label>
+          <div class="input-wrap">
+            <i class="ti ti-lock icone"></i>
+            <input type="password" id="mdp" placeholder="••••••••">
+            <i class="ti ti-eye password-toggle" onclick="toggleMdp(this)"></i>
+          </div>
+          <div class="error-msg" id="err-mdp">Veuillez entrer votre mot de passe</div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <i class="ti ti-login"></i> Se connecter
+        </button>
+
+      </form>
+
+      <div class="register-link">
+        Pas encore de compte ? <a href="inscription.html">Créer un compte</a>
+      </div>
+    </div>
+
+    <!-- Écran de bienvenue après connexion réussie -->
+    <div class="welcome-box" id="welcome-box">
+      <i class="ti ti-circle-check check-icon"></i>
+      <h2>Bienvenue, <span class="user-name" id="welcome-name"></span> !</h2>
+      <div class="countdown-badge">Redirection dans <span id="countdown">3</span> secondes...</div>
+      <p>Vous êtes connecté à votre compte SuperMarket Together.</p>
+      <a href="homme.html" class="btn-go">
+        <i class="ti ti-shopping-bag"></i> Aller aux catégories
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleMdp(icon) {
+      const input = document.getElementById('mdp');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('ti-eye', 'ti-eye-off');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('ti-eye-off', 'ti-eye');
+      }
+    }
+
+    function afficherErreur(id, afficher, msg) {
+      const el = document.getElementById('err-' + id);
+      const input = document.getElementById(id);
+      if (afficher) {
+        el.style.display = 'block';
+        if (msg) el.textContent = msg;
+        input.classList.add('error');
+      } else {
+        el.style.display = 'none';
+        input.classList.remove('error');
+      }
+    }
+
+    function afficherAlerte(msg) {
+      const box = document.getElementById('alert-error');
+      document.getElementById('alert-error-msg').textContent = msg;
+      box.style.display = 'flex';
+    }
+
+    function cacherAlerte() {
+      document.getElementById('alert-error').style.display = 'none';
+    }
+
+    async function connecter(e) {
+      e.preventDefault();
+      cacherAlerte();
+      let ok = true;
+
+      const email = document.getElementById('email').value.trim();
+      const mdp   = document.getElementById('mdp').value;
+
+      const emailOk = email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!emailOk) { afficherErreur('email', true, 'Veuillez entrer un email valide'); ok = false; }
+      else afficherErreur('email', false);
+
+      if (!mdp) { afficherErreur('mdp', true, 'Veuillez entrer votre mot de passe'); ok = false; }
+      else afficherErreur('mdp', false);
+
+      if (!ok) return false;
+
+      const btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ti ti-loader-2"></i> Connexion...';
+
+      try {
+        const reponse = await fetch('/api/connexion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, mot_de_passe: mdp })
+        });
+
+        const data = await reponse.json();
+
+        if (data.success) {
+          sessionStorage.setItem('utilisateur', JSON.stringify(data.utilisateur));
+
+          document.getElementById('welcome-name').textContent =
+            data.utilisateur.prenom + ' ' + data.utilisateur.nom;
+          document.getElementById('form-section').style.display = 'none';
+          document.getElementById('welcome-box').style.display = 'block';
+
+          // Compte à rebours 3 secondes puis redirection
+          let secondes = 3;
+          const timer = setInterval(() => {
+            secondes--;
+            const el = document.getElementById('countdown');
+            if (el) el.textContent = secondes;
+            if (secondes <= 0) {
+              clearInterval(timer);
+              window.location.href = "homme.html";
+            }
+          }, 1000);
+
+        } else {
+          afficherAlerte(data.message || 'Email ou mot de passe incorrect.');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="ti ti-login"></i> Se connecter';
+        }
+
+      } catch (err) {
+        afficherAlerte('Impossible de contacter le serveur. Vérifiez que node server.js est démarré.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="ti ti-login"></i> Se connecter';
+      }
+
+      return false;
+    }
+  </script>
+
+</body>
+</html>
