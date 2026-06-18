@@ -114,6 +114,30 @@
       font-size: 0.85rem;
     }
     .cart-btn:hover { color: #38bdf8; border-color: #38bdf8; background: rgba(56,189,248,0.08); }
+
+    /*button compte*/
+    .account-btn {
+      position: relative;
+      background: none;
+      border: 2px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      color: #d1d5db;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      height: 40px;
+      transition: color .2s, border-color .2s, background .2s;
+      flex-shrink: 0;
+      margin-left: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+    }
+    .account-btn:hover { color: #38bdf8; border-color: #38bdf8; background: rgba(56,189,248,0.08); }
+    .account-btn i { font-size: 20px; }
     .cart-btn i { font-size: 20px; }
     .cart-badge {
       background: #ef4444;
@@ -418,6 +442,12 @@
         </div>
       </li>
     </ul>
+
+    <!-- Bouton compte -->
+    <a class="account-btn" href="inscription.html" target="contenu" title="Mon compte">
+      <i class="ti ti-user-circle"></i>
+      Compte
+    </a>
 
     <!-- Bouton panier -->
     <button class="cart-btn" onclick="ouvrirPanier()" title="Mon panier">

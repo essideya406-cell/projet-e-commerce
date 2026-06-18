@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Admin – SuperMarket Together</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: #f0f2f5; min-height: 100vh; }
+
+    /*le log de ladmin */
+    .login-wrap {
+      min-height: 100vh; display: flex; align-items: center;
+      justify-content: center; padding: 2rem;
+    }
+    .login-card {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      padding: 2.5rem 2rem; width: 100%; max-width: 420px;
+    }
+    .login-header { text-align: center; margin-bottom: 2rem; }
+    .login-header .avatar {
+      width: 64px; height: 64px; background: #7c3aed;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 1rem;
+    }
+    .login-header .avatar i { font-size: 30px; color: #fff; }
+    .login-header h1 { font-size: 1.4rem; font-weight: 700; color: #111827; }
+    .login-header p  { font-size: 0.85rem; color: #6b7280; margin-top: 4px; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #374151; margin-bottom: 5px; }
+    .input-wrap { position: relative; }
+    .input-wrap i.icon {
+      position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%); font-size: 18px; color: #9ca3af;
+    }
+    .form-group input {
+      width: 100%; padding: 11px 12px 11px 40px;
+      border: 1.5px solid #e5e7eb; border-radius: 10px;
+      font-size: 0.9rem; font-family: 'Poppins', sans-serif;
+      color: #111827; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-group input:focus { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
+
+    .btn-login {
+      width: 100%; padding: 13px; background: #7c3aed; color: #fff;
+      border: none; border-radius: 10px; font-size: 1rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 1.5rem; transition: background .2s, transform .15s;
+    }
+    .btn-login:hover { background: #6d28d9; transform: translateY(-1px); }
+    .btn-login i { font-size: 18px; }
+
+    .error-login {
+      background: #fff1f1; border: 1px solid #fecaca;
+      color: #ef4444; border-radius: 8px;
+      padding: 10px 14px; font-size: 0.85rem;
+      margin-top: 1rem; display: none;
+    }
+    .back-link { text-align: center; margin-top: 1rem; font-size: 0.83rem; color: #6b7280; }
+    .back-link a { color: #7c3aed; text-decoration: none; font-weight: 600; }
+
+    /* dashbord*/
+    #dashboard { display: none; }
+
+    .topbar {
+      background: #111827; color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .topbar .brand { font-size: 1rem; font-weight: 700; }
+    .topbar .brand span { color: #a78bfa; }
+    .topbar .admin-info { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #d1d5db; }
+    .btn-logout {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; padding: 6px 14px; border-radius: 8px;
+      font-size: 0.8rem; cursor: pointer; transition: background .2s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.3); border-color: #ef4444; }
+
+    .main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: #fff; border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .stat-icon.purple { background: #f3e8ff; color: #7c3aed; }
+    .stat-icon.blue   { background: #e0f2fe; color: #0284c7; }
+    .stat-icon.green  { background: #dcfce7; color: #16a34a; }
+    .stat-info .val { font-size: 1.6rem; font-weight: 700; color: #111827; }
+    .stat-info .lbl { font-size: 0.78rem; color: #6b7280; }
+
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .tab-btn {
+      padding: 8px 20px; border-radius: 8px; border: 1.5px solid #e5e7eb;
+      background: #fff; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; color: #6b7280; font-family: 'Poppins', sans-serif;
+      display: flex; align-items: center; gap: 6px;
+      transition: all .2s;
+    }
+    .tab-btn.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+    .tab-btn:hover:not(.active) { border-color: #7c3aed; color: #7c3aed; }
+
+    .table-card {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden;
+    }
+    .table-header {
+      padding: 1rem 1.5rem; border-bottom: 1px solid #f3f4f6;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .table-header h2 { font-size: 1rem; font-weight: 700; color: #111827; }
+    .badge-count {
+      background: #f3e8ff; color: #7c3aed;
+      font-size: 0.75rem; font-weight: 700;
+      padding: 2px 10px; border-radius: 20px;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: #f9fafb; padding: 10px 16px;
+      font-size: 0.78rem; font-weight: 700;
+      color: #6b7280; text-align: left;
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    tbody td { padding: 12px 16px; font-size: 0.85rem; color: #374151; border-bottom: 1px solid #f3f4f6; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #faf5ff; }
+
+    .avatar-sm {
+      width: 32px; height: 32px; background: #7c3aed;
+      border-radius: 50%; display: inline-flex; align-items: center;
+      justify-content: center; color: #fff; font-size: 13px; font-weight: 700;
+      margin-right: 8px; vertical-align: middle;
+    }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600;
+    }
+    .status-badge.new   { background: #dcfce7; color: #16a34a; }
+    .status-badge.admin { background: #f3e8ff; color: #7c3aed; }
+
+    .loading { text-align: center; padding: 3rem; color: #9ca3af; }
+    .loading i { font-size: 32px; display: block; margin-bottom: 0.5rem; }
+
+    .btn-refresh {
+      background: none; border: 1.5px solid #e5e7eb; border-radius: 8px;
+      padding: 6px 12px; font-size: 0.8rem; cursor: pointer;
+      color: #6b7280; display: flex; align-items: center; gap: 6px;
+      font-family: 'Poppins', sans-serif; transition: all .2s;
+    }
+    .btn-refresh:hover { border-color: #7c3aed; color: #7c3aed; }
+  </style>
+</head>
+<body>
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="avatar"><i class="ti ti-shield-lock"></i></div>
+      <h1>Espace Admin</h1>
+      <p>Connectez-vous avec votre compte administrateur</p>
+    </div>
+
+    <div class="form-group">
+      <label>Email admin</label>
+      <div class="input-wrap">
+        <i class="ti ti-mail icon"></i>
+        <input type="text" id="admin-email" placeholder="admin@supermarket.com">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <div class="input-wrap">
+        <i class="ti ti-lock icon"></i>
+        <input type="password" id="admin-mdp" placeholder="••••••••" onkeydown="if(event.key==='Enter') connexionAdmin()">
+      </div>
+    </div>
+
+    <button class="btn-login" onclick="connexionAdmin()">
+      <i class="ti ti-login"></i> Accéder au tableau de bord
+    </button>
+
+    <div class="error-login" id="error-login">
+      <i class="ti ti-alert-circle"></i> Email ou mot de passe incorrect
+    </div>
+
+    <div class="back-link">
+      <a href="inscription.html"><i class="ti ti-arrow-left"></i> Retour</a>
+    </div>
+  </div>
+</div>
+
+<!-- le dashbord -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="brand">SuperMarket <span>Admin</span></div>
+    <div class="admin-info">
+      <i class="ti ti-shield-check"></i>
+      <span id="admin-name">Administrateur</span>
+      <button class="btn-logout" onclick="deconnexion()">
+        <i class="ti ti-logout"></i> Déconnexion
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+
+   
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="ti ti-users"></i></div>
+        <div class="stat-info">
+          <div class="val" id="stat-users">—</div>
+          <div class="lbl">Utilisateurs</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="ti ti-shopping-bag"></i></div>
+        <div class="stat-info">
+          <div class="val" id="stat-commandes">—</div>
+          <div class="lbl">Commandes</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="ti ti-cash"></i></div>
+        <div class="stat-info">
+          <div class="val" id="stat-total">—</div>
+          <div class="lbl">Chiffre d'affaires (DT)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="afficherTab('users')" id="tab-users">
+        <i class="ti ti-users"></i> Utilisateurs
+      </button>
+      <button class="tab-btn" onclick="afficherTab('commandes')" id="tab-commandes">
+        <i class="ti ti-shopping-bag"></i> Commandes
+      </button>
+    </div>
+
+    <!-- table user -->
+    <div class="table-card" id="panel-users">
+      <div class="table-header">
+        <h2><i class="ti ti-users" style="color:#7c3aed;margin-right:8px"></i>Liste des utilisateurs</h2>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="badge-count" id="count-users">0</span>
+          <button class="btn-refresh" onclick="chargerUtilisateurs()">
+            <i class="ti ti-refresh"></i> Actualiser
+          </button>
+        </div>
+      </div>
+      <div id="table-users-wrap">
+        <div class="loading"><i class="ti ti-loader"></i> Chargement...</div>
+      </div>
+    </div>
+
+    <!-- table commandes -->
+    <div class="table-card" id="panel-commandes" style="display:none">
+      <div class="table-header">
+        <h2><i class="ti ti-shopping-bag" style="color:#0284c7;margin-right:8px"></i>Liste des commandes</h2>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="badge-count" id="count-commandes">0</span>
+          <button class="btn-refresh" onclick="chargerCommandes()">
+            <i class="ti ti-refresh"></i> Actualiser
+          </button>
+        </div>
+      </div>
+      <div id="table-commandes-wrap">
+        <div class="loading"><i class="ti ti-loader"></i> Chargement...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  //Connexion admin
+  async function connexionAdmin() {
+    const email = document.getElementById('admin-email').value.trim();
+    const mdp   = document.getElementById('admin-mdp').value;
+    const errEl = document.getElementById('error-login');
+    errEl.style.display = 'none';
+
+    if (!email || !mdp) { errEl.style.display = 'block'; return; }
+
+    try {
+      const res  = await fetch('/api/admin/connexion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, mot_de_passe: mdp })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        sessionStorage.setItem('admin', JSON.stringify(data.admin));
+        document.getElementById('login-wrap').style.display  = 'none';
+        document.getElementById('dashboard').style.display   = 'block';
+        document.getElementById('admin-name').textContent    = data.admin.prenom + ' ' + data.admin.nom;
+        chargerUtilisateurs();
+        chargerStats();
+      } else {
+        errEl.style.display = 'block';
+      }
+    } catch (e) {
+      errEl.textContent = 'Erreur réseau — serveur démarré ?';
+      errEl.style.display = 'block';
+    }
+  }
+
+  function deconnexion() {
+    sessionStorage.removeItem('admin');
+    document.getElementById('login-wrap').style.display  = 'flex';
+    document.getElementById('dashboard').style.display   = 'none';
+    document.getElementById('admin-email').value = '';
+    document.getElementById('admin-mdp').value   = '';
+  }
+
+  // tables
+  function afficherTab(tab) {
+    document.getElementById('panel-users').style.display     = tab === 'users'     ? 'block' : 'none';
+    document.getElementById('panel-commandes').style.display = tab === 'commandes' ? 'block' : 'none';
+    document.getElementById('tab-users').className     = 'tab-btn' + (tab === 'users'     ? ' active' : '');
+    document.getElementById('tab-commandes').className = 'tab-btn' + (tab === 'commandes' ? ' active' : '');
+    if (tab === 'commandes') chargerCommandes();
+  }
+
+ 
+  async function chargerStats() {
+    try {
+      const r = await fetch('/api/admin/stats');
+      const d = await r.json();
+      if (d.success) {
+        document.getElementById('stat-users').textContent     = d.stats.utilisateurs;
+        document.getElementById('stat-commandes').textContent = d.stats.commandes;
+        document.getElementById('stat-total').textContent     = parseFloat(d.stats.total || 0).toFixed(2);
+      }
+    } catch(e) {}
+  }
+
+  // utilisateur
+  async function chargerUtilisateurs() {
+    const wrap = document.getElementById('table-users-wrap');
+    wrap.innerHTML = '<div class="loading"><i class="ti ti-loader"></i> Chargement...</div>';
+    try {
+      const res  = await fetch('/api/admin/utilisateurs');
+      const data = await res.json();
+      if (!data.success) { wrap.innerHTML = '<div class="loading">Erreur chargement</div>'; return; }
+
+      const users = data.utilisateurs;
+      document.getElementById('count-users').textContent = users.length;
+      document.getElementById('stat-users').textContent  = users.length;
+
+      if (users.length === 0) {
+        wrap.innerHTML = '<div class="loading"><i class="ti ti-users"></i><br>Aucun utilisateur</div>';
+        return;
+      }
+
+      let html = '<table><thead><tr>' +
+        '<th>Utilisateur</th><th>Email</th><th>Téléphone</th><th>Rôle</th><th>Date inscription</th>' +
+        '</tr></thead><tbody>';
+
+      users.forEach(u => {
+        const initiales = (u.prenom?.[0] || '') + (u.nom?.[0] || '');
+        const role      = u.role === 'admin' ? 
+          '<span class="status-badge admin"><i class="ti ti-shield"></i> Admin</span>' :
+          '<span class="status-badge new"><i class="ti ti-user"></i> Client</span>';
+        const date = u.date_inscription ? new Date(u.date_inscription).toLocaleDateString('fr-FR') : '—';
+        html += `<tr>
+          <td><span class="avatar-sm">${initiales.toUpperCase()}</span>${u.prenom} ${u.nom}</td>
+          <td>${u.email}</td>
+          <td>${u.telephone || '—'}</td>
+          <td>${role}</td>
+          <td>${date}</td>
+        </tr>`;
+      });
+
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+    } catch(e) {
+      wrap.innerHTML = '<div class="loading">Erreur réseau</div>';
+    }
+  }
+
+  // commandes
+  async function chargerCommandes() {
+    const wrap = document.getElementById('table-commandes-wrap');
+    wrap.innerHTML = '<div class="loading"><i class="ti ti-loader"></i> Chargement...</div>';
+    try {
+      const res  = await fetch('/api/admin/commandes');
+      const data = await res.json();
+      if (!data.success) { wrap.innerHTML = '<div class="loading">Erreur chargement</div>'; return; }
+
+      const commandes = data.commandes;
+      document.getElementById('count-commandes').textContent = commandes.length;
+
+      if (commandes.length === 0) {
+        wrap.innerHTML = '<div class="loading"><i class="ti ti-shopping-bag"></i><br>Aucune commande</div>';
+        return;
+      }
+
+      let html = '<table><thead><tr>' +
+        '<th>#</th><th>Client</th><th>Email</th><th>Téléphone</th><th>Localisation</th><th>Total (DT)</th><th>Date</th>' +
+        '</tr></thead><tbody>';
+
+      commandes.forEach(c => {
+        const date = c.date_commande ? new Date(c.date_commande).toLocaleDateString('fr-FR') : '—';
+        html += `<tr>
+          <td><strong>#${c.id_commande}</strong></td>
+          <td>${c.prenom} ${c.nom}</td>
+          <td>${c.email}</td>
+          <td>${c.telephone || '—'}</td>
+          <td>${c.localisation || '—'}</td>
+          <td><strong>${parseFloat(c.total||0).toFixed(2)}</strong></td>
+          <td>${date}</td>
+        </tr>`;
+      });
+
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+    } catch(e) {
+      wrap.innerHTML = '<div class="loading">Erreur réseau</div>';
+    }
+  }
+
+  //login automatique si la session activer 
+  const adminSession = sessionStorage.getItem('admin');
+  if (adminSession) {
+    try {
+      const admin = JSON.parse(adminSession);
+      document.getElementById('login-wrap').style.display  = 'none';
+      document.getElementById('dashboard').style.display   = 'block';
+      document.getElementById('admin-name').textContent    = admin.prenom + ' ' + admin.nom;
+      chargerUtilisateurs();
+      chargerStats();
+    } catch(e) { sessionStorage.removeItem('admin'); }
+  }
+</script>
+
+</body>
+</html>

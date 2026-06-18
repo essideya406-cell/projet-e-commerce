@@ -1,1 +1,2 @@
-# projet-site-ecommerce-local
+# projet-e-commerce
+e-commerce Local

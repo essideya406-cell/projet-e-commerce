@@ -177,6 +177,87 @@ app.post("/api/commande", async (req, res) => {
 
 
 const PORT = 3000;
+
+// ─── ADMIN : CONNEXION ───────────────────────────────────────────────────────
+app.post("/api/admin/connexion", async (req, res) => {
+    const { email, mot_de_passe } = req.body;
+    if (!email || !mot_de_passe)
+        return res.status(400).json({ success: false, message: "Champs manquants" });
+
+    try {
+        const rows = await db.query(
+            "SELECT id_utilisateur, nom, prenom, email, role FROM utilisateurs WHERE email = ? AND mot_de_passe = ? AND role = 'admin'",
+            [email, mot_de_passe]
+        );
+        if (rows.length === 0)
+            return res.status(401).json({ success: false, message: "Accès refusé" });
+
+        const admin = {
+            id:     Number(rows[0].id_utilisateur),
+            nom:    rows[0].nom,
+            prenom: rows[0].prenom,
+            email:  rows[0].email,
+            role:   rows[0].role
+        };
+        console.log("[ADMIN] Connexion réussie pour :", admin.email);
+        res.json({ success: true, admin });
+    } catch (err) {
+        console.error("[ADMIN CONNEXION] ERREUR :", err.message);
+        res.status(500).json({ success: false, message: "Erreur serveur : " + err.message });
+    }
+});
+
+
+// ─── ADMIN : LISTE UTILISATEURS ─────────────────────────────────────────────
+app.get("/api/admin/utilisateurs", async (req, res) => {
+    try {
+        const rows = await db.query(
+            "SELECT id_utilisateur, nom, prenom, email, telephone, role, date_inscription FROM utilisateurs ORDER BY id_utilisateur DESC"
+        );
+        res.json({ success: true, utilisateurs: rows });
+    } catch (err) {
+        console.error("[ADMIN USERS] ERREUR :", err.message);
+        res.status(500).json({ success: false, message: "Erreur serveur : " + err.message });
+    }
+});
+
+
+// ─── ADMIN : LISTE COMMANDES ─────────────────────────────────────────────────
+app.get("/api/admin/commandes", async (req, res) => {
+    try {
+        const rows = await db.query(
+            "SELECT id_commande, nom, prenom, email, telephone, localisation, total, date_commande FROM commandes ORDER BY id_commande DESC"
+        );
+        res.json({ success: true, commandes: rows });
+    } catch (err) {
+        console.error("[ADMIN COMMANDES] ERREUR :", err.message);
+        res.status(500).json({ success: false, message: "Erreur serveur : " + err.message });
+    }
+});
+
+
+// ─── ADMIN : STATS ───────────────────────────────────────────────────────────
+app.get("/api/admin/stats", async (req, res) => {
+    try {
+        const [uRows] = await db.query("SELECT COUNT(*) AS total FROM utilisateurs");
+        const [cRows] = await db.query("SELECT COUNT(*) AS total, IFNULL(SUM(total),0) AS ca FROM commandes");
+        res.json({
+            success: true,
+            stats: {
+                utilisateurs: Number(uRows.total),
+                commandes:    Number(cRows.total),
+                total:        parseFloat(cRows.ca)
+            }
+        });
+    } catch (err) {
+        console.error("[ADMIN STATS] ERREUR :", err.message);
+        res.status(500).json({ success: false, message: "Erreur serveur : " + err.message });
+    }
+});
+
+
+
+const PORT = 3000;
 app.listen(PORT, () => {
     console.log("═══════════════════════════════════════════");
     console.log(`  Serveur lancé sur http://localhost:${PORT}`);

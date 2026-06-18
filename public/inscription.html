@@ -288,7 +288,7 @@
       lbl.textContent       = mdp.length ? n.txt : '';
     }
 
-    // ── Soumission ────────────────────────────────────────────────────────────
+   
     async function soumettre(e) {
       e.preventDefault();
       log('══ Soumission du formulaire ══', 'info');
@@ -400,9 +400,6 @@
         btn.innerHTML = '<i class="ti ti-check"></i> Créer mon compte';
       }
     }
-
-    document.getElementById('inscriptionForm').addEventListener('submit', soumettre);
-    log('Page chargée — formulaire prêt', 'ok');
   </script>
 
 </body>

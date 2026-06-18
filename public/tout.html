@@ -81,6 +81,11 @@
       border: 1.5px solid #d1d5db;
     }
 
+    .btn-admin {
+      background: #7c3aed;
+      color: #fff;
+    }
+
     .btn i { font-size: 20px; }
 
     .divider {
@@ -112,6 +117,14 @@
     <p>Découvrez des milliers de produits — vêtements, électronique, chaussures et plus encore.</p>
 
     <div class="buttons">
+
+      <a href="admin.html" class="btn btn-admin">
+        <i class="ti ti-shield-lock"></i>
+        Compte Admin
+      </a>
+
+      <div class="divider">ou</div>
+
       <a href="inscription.html" class="btn btn-primary">
         <i class="ti ti-user-plus"></i>
         Créer un compte
@@ -130,7 +143,6 @@
 
   <script>
     function naviguerSansCompte() {
-      // Redirige vers la page des produits dans l'iframe parent
       if (window.parent && window.parent !== window) {
         window.parent.document.querySelector('iframe[name="contenu"]').src = 'Vetements.html';
       }
